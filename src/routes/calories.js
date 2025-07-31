@@ -1,9 +1,15 @@
 import express from "express";
-import { getCalories } from "../controllers/calorieController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+export default function createCalorieRoutes(container) {
+  const router = express.Router();
+  const calorieController = container.resolve("calorieController");
+  const authMiddleware = container.resolve("authMiddleware");
 
-router.post("/get-calories", authMiddleware, getCalories);
+  router.post(
+    "/get-calories",
+    authMiddleware.authenticate,
+    calorieController.getCalories
+  );
 
-export default router;
+  return router;
+}

@@ -1,9 +1,15 @@
 import express from "express";
-import { getMealHistory } from "../controllers/mealHistoryController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+export default function createMealHistoryRoutes(container) {
+  const router = express.Router();
+  const mealHistoryController = container.resolve("mealHistoryController");
+  const authMiddleware = container.resolve("authMiddleware");
 
-router.get("/meal-history", authMiddleware, getMealHistory);
+  router.get(
+    "/meal-history",
+    authMiddleware.authenticate,
+    mealHistoryController.getMealHistory
+  );
 
-export default router;
+  return router;
+}

@@ -1,13 +1,17 @@
-import MealLog from "../models/mealLogModel.js";
+export class MealHistoryController {
+  #mealHistoryService;
 
-export const getMealHistory = async (req, res) => {
-  try {
-    const userId = req.user.sub;
-    const history = await MealLog.find({ user: userId })
-      .sort({ date: -1 })
-      .limit(50);
-    res.json(history);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
+  constructor(mealHistoryService) {
+    this.#mealHistoryService = mealHistoryService;
   }
-};
+
+  getMealHistory = async (req, res) => {
+    try {
+      const userId = req.user.sub;
+      const history = await this.#mealHistoryService.getUserMealHistory(userId);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  };
+}
